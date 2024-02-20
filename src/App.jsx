@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Header } from "./components/Header";
 import { Tasks } from "./components/Tasks";
+import useFetchTasks from "./Hooks/useFetchTasks";
 
 const LOCAL_STORAGE_KEY = 'todo:tasks';
 
 function App() {
+  const { data, loading, error } = useFetchTasks();
   const [tasks, setTasks] = useState([]);
 
   function loadSavedTasks() {
@@ -12,16 +14,23 @@ function App() {
     if(saved) {
       setTasks(JSON.parse(saved));
     }
+    // setTasks(data);
   }
-
+  
   function setTasksAndSave(newTasks) {
     setTasks(newTasks);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTasks));
   }
-
+  
   useEffect(() => {
-    loadSavedTasks();
-  }, [])
+    // loadSavedTasks();
+    if (data !== null) {
+      setTasks(data);
+    }
+    // console.log("data", data, typeof data);
+    console.log("tasks", tasks, typeof tasks);
+
+  }, [data]);
 
   function addTask(taskTitle) {
     setTasksAndSave([...tasks, {
@@ -49,9 +58,22 @@ function App() {
     setTasksAndSave(newTasks);
   }
 
+
+  
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+
+
   return (
     <>
       <Header handleAddTask={addTask} />
+
       <Tasks
         tasks={tasks}
         onDelete={deleteTaskById}
