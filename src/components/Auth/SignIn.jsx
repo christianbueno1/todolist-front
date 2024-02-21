@@ -12,6 +12,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useLogin } from '../../Hooks/useFetchAuth';
+import UserContext from '../../MyContext';
+import { useContext } from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props) {
   return (
@@ -31,6 +36,19 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+
+  const { user, setUser, isAuthenticated, setIsAuthenticated } = useContext(UserContext);
+  const { login, isLoading, error, data } = useLogin();
+
+  const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -38,7 +56,29 @@ export default function SignIn() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    const email = data.get('email');
+    const password = data.get('password');
+    handleLogin(email, password);
   };
+
+  const handleLogin = async (email, password) => {
+    const data = await login(email, password);
+    console.log("data", data);
+    if (data && data.access_token) {
+      localStorage.setItem('token', data.access_token);
+      setUser(data.user);
+      setIsAuthenticated(true);
+      navigate('/', { replace: true });
+    } else {
+      setIsAuthenticated(false);
+    }
+
+  }
+
+  useEffect(() => {
+    console.log("user", user);
+    console.log("isAuthenticated", isAuthenticated);
+  }, [user, setIsAuthenticated]);
 
   return (
     <ThemeProvider theme={defaultTheme}>

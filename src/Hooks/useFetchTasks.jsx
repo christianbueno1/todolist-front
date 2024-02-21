@@ -1,12 +1,17 @@
+import { useContext } from 'react';
 import { useState, useEffect } from 'react';
+import UserContext from '../MyContext';
 
 export function useFetchTasks() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { user } = useContext(UserContext);
+  const userId = user.id;
+
   useEffect(() => {
-    fetch('http://localhost:49153/api/v1/tasks')
+    fetch(`http://localhost:49153/api/v1/tasks/find-all-tasks-by-user/${userId}`)
       .then(response => {
         if (response.ok) {
           return response.json();

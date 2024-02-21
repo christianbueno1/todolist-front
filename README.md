@@ -1,6 +1,14 @@
-## Todolist frontend
+# Todolist frontend
 
-### Installation
+## Installation
+
+### run the API
+
+- You must run the backend
+
+[go to the todolist API](https://github.com/christianbueno1/todolist-api)
+
+### Run the project
 
 ```
 npm i

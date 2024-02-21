@@ -32,15 +32,9 @@ export function Filter({ onFilterTextChange }) {
 
   return (
     <header className={styles.header}>
-      {/* <header > */}
-      {/* <img src={todoLogo} /> */}
-
-      {/* <form onSubmit={} className={styles.newTaskForm} style={{ position: 'relative' }}> */}
-      <form className={styles.newTaskForm} style={{ position: 'relative' }}>
-        {/* <input placeholder="Add a new task" type="text" onChange={onChangeTitle} value={title} /> */}
+      <form className={styles.newTaskForm}>
         <AiOutlineFilter size={20} style={{ position: 'absolute', left: '25px', top: '18px' }} />
         <input placeholder="filter" type="text" onChange={onChangeTitle} value={description} />
-        {/* <button>Create <AiOutlinePlusCircle size={20} /></button> */}
       </form>
     </header>
   )

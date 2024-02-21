@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Header } from "./components/Header";
 import { Tasks } from "./components/Tasks";
 import { useAddTask, useDeleteTask, useFetchTasks, useUpdateStatusTask } from "./Hooks/useFetchTasks";
-import { UserContext } from "./MyContext";
 import { Filter } from "./components/Filter";
+import UserContext, { UserProvider } from "./MyContext";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
 
 const LOCAL_STORAGE_KEY = 'todo:tasks';
 
@@ -11,10 +13,13 @@ function App() {
   const { data, loading, error } = useFetchTasks();
   const [tasks, setTasks] = useState([]);
   const { addTask: addTaskFetch, isLoading: isLoadingAddTask, error: errorAddTask } = useAddTask();
-  const [user, setUser] = useState({ id: 15, username: "steverogers", "email": "steve@ibm.com" });
-  const { updateStatusTask, isLoading: isLoadingUpdateStatus, error: errorUpdateStatus} = useUpdateStatusTask();
-  const { deleteTask, isLoading: isLoadingTaskDelete, error: errorTaskDelete} = useDeleteTask();
+  // const [user, setUser] = useState({ id: 15, username: "steverogers", "email": "steve@ibm.com" });
+  const { updateStatusTask, isLoading: isLoadingUpdateStatus, error: errorUpdateStatus } = useUpdateStatusTask();
+  const { deleteTask, isLoading: isLoadingTaskDelete, error: errorTaskDelete } = useDeleteTask();
   const [filterText, setFilterText] = useState('');
+
+  const { user, setUser, isAuthenticated, setIsAuthenticated } = useContext(UserContext);
+  const navigate = useNavigate();
 
 
   // function loadSavedTasks() {
@@ -51,6 +56,16 @@ function App() {
   //     isCompleted: false
   //   }]);
   // }
+
+  const handleLogout = () => {
+    // Clear the user's authentication data
+    localStorage.removeItem('token');
+    setUser(null);
+    setIsAuthenticated(false);
+
+    // Redirect to the login page
+    navigate('/login');
+  }
 
   const handleAddTask = async (userId, description) => {
     const task = await addTaskFetch(userId, description);
@@ -114,17 +129,17 @@ function App() {
   return (
     <>
       {/* <Header handleAddTask={addTask}/> */}
-      <UserContext.Provider value={user}>
 
-        <Header handleAddTask={handleAddTask} />
-        <Filter onFilterTextChange={setFilterText} />
+      {/* <Header handleAddTask={handleAddTask} /> */}
+      <Header handleAddTask={handleAddTask} onLogout={handleLogout} />
 
-        <Tasks
-          tasks={filteredTasks}
-          onDelete={deleteTaskById}
-          onComplete={toggleTaskDoneById}
-        />
-      </UserContext.Provider>
+      <Filter onFilterTextChange={setFilterText} />
+
+      <Tasks
+        tasks={filteredTasks}
+        onDelete={deleteTaskById}
+        onComplete={toggleTaskDoneById}
+      />
     </>
   )
 }

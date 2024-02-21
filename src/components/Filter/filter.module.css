@@ -2,13 +2,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 70px;
-  position: relative;
 }
 
 .newTaskForm {
+  position: relative;
   height: 54px;
-  bottom: -27px;
   width: 100%;
   max-width: 736px;
   display: flex;
@@ -31,16 +29,3 @@
   color: #808080;
 }
 
-.newTaskForm button {
-  height: 100%;
-  padding: 0 16px;
-  background: #1E6F9F;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 700;
-  font-size: 14px;
-}
