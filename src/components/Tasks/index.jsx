@@ -3,7 +3,9 @@ import styles from './tasks.module.css';
 
 export function Tasks({ tasks, onDelete, onComplete }) {
   const tasksQuantity = tasks.length;
-  const completedTasks = tasks.filter(task => task.isCompleted).length;
+  // const completedTasks = tasks.filter(task => task.isCompleted).length;
+  const completedTasks = tasks.filter(task => task.status === "DONE").length;
+  console.log("rendered Tasks");
 
   return (
     <section className={styles.tasks}>
